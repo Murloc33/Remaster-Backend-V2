@@ -5,66 +5,21 @@ from docx import Document as Docx
 from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Pt
-from fastapi import APIRouter, Depends, Body
+from fastapi import Depends, APIRouter, Body, Path
 from starlette.responses import Response
+from typing_extensions import Annotated
 
 from core.methods import get_connection
-from modules.athletes.schemes import Athlete
-from modules.documents.schemes import Document, CreateDocument, Order
 
-router = APIRouter(prefix='/documents')
-
-
-@router.get('/')
-def get_documents(connection: Connection = Depends(get_connection)):
-    cursor = connection.cursor()
-
-    cursor.execute('SELECT * FROM documents')
-    results = cursor.fetchall()
-
-    return {'data': results}
-
-
-@router.post('/')
-def create_document(document: CreateDocument, connection: Connection = Depends(get_connection)):
-    cursor = connection.cursor()
-
-    cursor.execute(
-        'INSERT INTO documents (title, sports_category_id) VALUES (?, ?) RETURNING id',
-        (document.title, document.sports_category_id)
-    )
-
-    id = cursor.fetchone()["id"]
-    connection.commit()
-
-    return {"data": id}
-
-
-@router.get('/{document_id}')
-def get_document(document_id: int, connection: Connection = Depends(get_connection)):
-    cursor = connection.cursor()
-
-    cursor.execute('SELECT * FROM documents WHERE id = ?', (document_id,))
-    document_data = cursor.fetchone()
-
-    cursor.execute('SELECT * FROM sports')
-    sports_data = {v['id']: v['name'] for v in cursor.fetchall()}
-
-    cursor.execute('SELECT * FROM document_athletes WHERE document_id = ?', (document_id,))
-    athletes_data = cursor.fetchall()
-
-    athletes_data.sort(key=lambda athlete: (sports_data[athlete['sport_id']], athlete['full_name']))
-
-    for athlete in athletes_data:
-        athlete.update({'sport_name': sports_data[athlete['sport_id']]})
-        del athlete['sport_id']
-
-    document_data.update({'athletes': athletes_data})
-    return {"data": document_data}
+router = APIRouter()
 
 
 @router.post("/{document_id}/order")
-def create_order(document_id: int, order: Order, connection: Connection = Depends(get_connection)):
+def create_order(
+    document_id: Annotated[int, Path()],
+    path: Annotated[str, Body()],
+    connection: Annotated[Connection, Depends(get_connection)]
+):
     cursor = connection.cursor()
 
     cursor.execute('SELECT * FROM documents WHERE id = ?', (document_id,))
@@ -125,7 +80,6 @@ def create_order(document_id: int, order: Order, connection: Connection = Depend
             for run in paragraph.runs:
                 run.bold = True
 
-
     big_counter = 0
     small_counter = 0
     cur_sport = -100
@@ -153,55 +107,11 @@ def create_order(document_id: int, order: Order, connection: Connection = Depend
         row_cells[2].text = row_data["birth_date"]
         row_cells[3].text = row_data["municipality"]
         row_cells[4].text = row_data["organization"]
-        for i in range(0,5):
+        for i in range(0, 5):
             for paragraph in row_cells[i].paragraphs:
                 paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
         small_counter += 1
 
-    doc.save(order.path)
+    doc.save(path)
 
-
-@router.put('/{document_id}')
-def update_document(document_id: int, document: Document, connection: Connection = Depends(get_connection)):
-    cursor = connection.cursor()
-
-    cursor.execute(
-        "UPDATE documents SET title = ?, sports_category_id = ? WHERE id = ?",
-        (document.title, document.sports_category_id, document_id)
-    )
-    connection.commit()
-
-    return Response(status_code=200)
-
-
-@router.delete('/{document_id}')
-def delete_document(document_id: int, connection: Connection = Depends(get_connection)):
-    cursor = connection.cursor()
-
-    cursor.execute('DELETE FROM documents WHERE id = ?', (document_id,))
-    connection.commit()
-
-    return Response(status_code=200)
-
-
-@router.post('/{document_id}/athletes')
-def create_athlete(document_id: int, athlete: Athlete, connection: Connection = Depends(get_connection)):
-    cursor = connection.cursor()
-
-    cursor.execute(
-        (
-            "INSERT INTO document_athletes "
-            "(document_id, full_name, birth_date, sport_id, municipality, organization,"
-            " is_sports_category_granted, is_doping_check_passed) "
-            "VALUES(?, ?, ?, ?, ?, ?, ?, ?) RETURNING id"
-        ),
-        (
-            document_id, athlete.full_name, athlete.birth_date, athlete.sport_id,
-            athlete.municipality, athlete.organization,
-            athlete.is_sports_category_granted, athlete.is_doping_check_passed
-        )
-    )
-    id = cursor.fetchone()["id"]
-    connection.commit()
-
-    return {"data": id}
+    return Response()

@@ -1,26 +1,34 @@
 from sqlite3 import Connection
 
-from fastapi import APIRouter, Depends
-from starlette.responses import Response
+from fastapi import APIRouter, Depends, Path, Body
+from starlette.responses import Response, JSONResponse
+from typing_extensions import Annotated
 
-from modules.athletes.schemes import Athlete, UpdateAthlete
 from core.methods import get_connection
+from modules.athletes.modules.athlete.schemes import UpdateAthlete, Athlete
 
-router = APIRouter(prefix='/athletes')
+router = APIRouter()
 
 
 @router.get('/{athlete_id}')
-def get_athletes(athlete_id: int, connection: Connection = Depends(get_connection)):
+def get_athletes(
+    athlete_id: Annotated[int, Path()],
+    connection: Annotated[Connection, Depends(get_connection)]
+):
     cursor = connection.cursor()
 
     cursor.execute("SELECT * FROM document_athletes WHERE id = ?", (athlete_id,))
     athlete = cursor.fetchone()
 
-    return {"data": athlete}
+    return JSONResponse(content={"data": Athlete(**athlete)})
 
 
 @router.put('/{athlete_id}')
-def update_athlete(athlete_id: int, athlete: UpdateAthlete, connection: Connection = Depends(get_connection)):
+def update_athlete(
+    athlete_id: Annotated[int, Path()],
+    athlete: Annotated[UpdateAthlete, Body()],
+    connection: Annotated[Connection, Depends(get_connection)]
+):
     cursor = connection.cursor()
 
     cursor.execute(
@@ -38,14 +46,17 @@ def update_athlete(athlete_id: int, athlete: UpdateAthlete, connection: Connecti
     )
 
     connection.commit()
-    return Response(status_code=200)
+    return Response()
 
 
 @router.delete('/{athlete_id}')
-def delete_athlete(athlete_id: int, connection: Connection = Depends(get_connection)):
+def delete_athlete(
+    athlete_id: Annotated[int, Path()],
+    connection: Annotated[Connection, Depends(get_connection)]
+):
     cursor = connection.cursor()
 
     cursor.execute("DELETE FROM document_athletes WHERE id = ?", (athlete_id,))
     connection.commit()
 
-    return Response(status_code=200)
+    return Response()

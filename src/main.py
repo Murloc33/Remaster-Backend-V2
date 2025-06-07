@@ -40,4 +40,4 @@ if __name__ == "__main__":
     input_thread = threading.Thread(target=stdin_loop, daemon=True)
     input_thread.start()
 
-    uvicorn.run(app, host="127.0.0.1", port=1010)
+    uvicorn.run(app, port=1010)
