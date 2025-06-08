@@ -1,9 +1,9 @@
 from typing import List
 
-from pydantic import TypeAdapter
+from pydantic import TypeAdapter, BaseModel
 
 
-class DopingAthlete:
+class DopingAthlete(BaseModel):
     id: int
     full_name: str
     sport: str
