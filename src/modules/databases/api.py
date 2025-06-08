@@ -31,7 +31,7 @@ def convert_date(original_date: datetime):
         return original_date
 
 @router.put('/doping-athletes/upload')
-def update_doping_athlete(
+def upload_doping_athlete(
     path: Annotated[str, Body()],
     connection: Annotated[Connection, Depends(get_connection)]
 ):
@@ -64,7 +64,7 @@ def update_doping_athlete(
 
 
 @router.put('/orders/upload')
-def update_order(
+def upload_order(
     path: Annotated[str, Body()],
     connection: Annotated[Connection, Depends(get_connection)]
 ):
@@ -75,4 +75,20 @@ def update_order(
     destination_path = "../resources/Шаблон_приказа.docx"
     shutil.copy(path, destination_path)
 
+    return Response()
+
+
+@router.put('/doping-athletes/download')
+def download_doping_athlete(
+    path: Annotated[str, Body()],
+    connection: Annotated[Connection, Depends(get_connection)]
+):
+    return Response()
+
+
+@router.put('/order/download')
+def download_order(
+    path: Annotated[str, Body()],
+    connection: Annotated[Connection, Depends(get_connection)]
+):
     return Response()

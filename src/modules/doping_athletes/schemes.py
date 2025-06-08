@@ -4,6 +4,7 @@ from pydantic import TypeAdapter, BaseModel
 
 
 class DopingAthlete(BaseModel):
+    id: int
     full_name: str
     sport: str
     birth_date: str
