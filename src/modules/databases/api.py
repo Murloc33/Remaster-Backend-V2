@@ -52,7 +52,7 @@ def update_doping_athlete(
             "(full_name, sport, birth_date, violation_description, disqualification_duration, disqualification_start, disqualification_end)"
             " VALUES (?, ?, ?, ?, ?, ?, ?)",
             (
-                row[0], row[2], convert_date(row[1]), row[3], row[4],
+                row[0], row[2].capitalize(), convert_date(row[1]), row[3], row[4].capitalize(),
                 convert_date(row[5]), convert_date(row[6])
             )
         )
