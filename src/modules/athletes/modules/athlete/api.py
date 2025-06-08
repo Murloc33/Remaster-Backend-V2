@@ -20,7 +20,7 @@ def get_athletes(
     cursor.execute("SELECT * FROM document_athletes WHERE id = ?", (athlete_id,))
     athlete = cursor.fetchone()
 
-    return JSONResponse(content={"data": Athlete(**athlete)})
+    return JSONResponse(content={"data": Athlete(**athlete).model_dump()})
 
 
 @router.put('/{athlete_id}')

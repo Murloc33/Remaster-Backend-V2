@@ -1,7 +1,8 @@
+import json
 from sqlite3 import Connection
 
 from fastapi import APIRouter, Depends, Body, Path
-from starlette.responses import Response, JSONResponse
+from starlette.responses import Response, JSONResponse, FileResponse
 from typing_extensions import Annotated
 
 from core.methods import get_connection
@@ -28,6 +29,20 @@ def create_document(
     return JSONResponse(content={"data": {'id': id_}})
 
 
+@router.post('/file')
+def create_document_from_file(
+        path: Annotated[str, Body()],
+        connection: Annotated[Connection, Depends(get_connection)]
+):
+    data = json.load(open(path))
+
+    cursor = connection.cursor()
+    cursor.execute('INSERT INTO documents (title, sports_category_id) VALUES (?, ?)', (data['title'], data['sports_category_id']))
+
+    connection.commit()
+
+    return Response(status_code=200)
+
 @router.get('/{document_id}')
 def get_document(
     document_id: Annotated[int, Path()],
@@ -50,7 +65,24 @@ def get_document(
         athlete.update({'sport_name': sports_data[athlete['sport_id']]})
         del athlete['sport_id']
 
-    return JSONResponse(content={"data": Document(**document_data, athletes=athletes_data)})
+    return JSONResponse(content={"data": Document(**document_data, athletes=athletes_data).model_dump()})
+
+
+@router.post('/{document_id}/file')
+def get_document_to_file(
+        document_id: Annotated[int, Path()],
+        path: Annotated[str, Body()],
+        connection: Annotated[Connection, Depends(get_connection)]
+):
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT * FROM documents WHERE id = ?", (document_id,))
+    data = cursor.fetchone()
+
+    with open(path, 'w', encoding='utf-8') as file:
+        json.dump(data, file)
+
+    return Response(status_code=200)
 
 
 @router.put('/{document_id}')

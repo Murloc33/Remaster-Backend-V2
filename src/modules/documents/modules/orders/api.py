@@ -28,7 +28,7 @@ def create_order(
     cursor.execute('SELECT * FROM sports')
     sports_data = {v['id']: v['name'] for v in cursor.fetchall()}
 
-    cursor.execute('SELECT * FROM document_athletes WHERE document_id = ?', (document_id,))
+    cursor.execute('SELECT * FROM document_athletes WHERE document_id = ? AND is_sports_category_granted = true AND is_doping_check_passed = false', (document_id,))
     athletes_data = cursor.fetchall()
 
     athletes_data.sort(key=lambda athlete: (sports_data[athlete['sport_id']], athlete['full_name']))

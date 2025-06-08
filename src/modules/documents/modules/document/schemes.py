@@ -19,7 +19,7 @@ class Athlete(BaseModel):
 
 
 class Document(BaseModel):
-    id: str
+    id: int
     title: str
     sports_category_id: int
     athletes: List[Athlete]
