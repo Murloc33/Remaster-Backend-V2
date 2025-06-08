@@ -22,6 +22,13 @@ def read_database(connection: Annotated[Connection, Depends(get_connection)]):
 
     return {"data": Databases.validate_python(result)}
 
+def convert_date(original_date: datetime):
+    if original_date == None:
+        return 'None'
+    try:
+        return original_date.strftime("%d.%m.%Y")
+    except AttributeError:
+        return original_date
 
 @router.put('/doping-athletes/upload')
 def update_doping_athlete(
@@ -45,8 +52,8 @@ def update_doping_athlete(
             "(full_name, sport, birth_date, violation_description, disqualification_duration, disqualification_start, disqualification_end)"
             " VALUES (?, ?, ?, ?, ?, ?, ?)",
             (
-                row[0], row[2], str(row[1]).replace(' 00:00:00', ""), row[3], row[4],
-                str(row[5]).replace(' 00:00:00', ""), str(row[6]).replace(' 00:00:00', "")
+                row[0], row[2], convert_date(row[1]), row[3], row[4],
+                convert_date(row[5]), convert_date(row[6])
             )
         )
 
