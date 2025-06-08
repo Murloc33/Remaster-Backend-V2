@@ -9,6 +9,21 @@ from core.methods import get_connection
 from modules.documents.modules.file.schemes import Document
 
 router = APIRouter()
+@router.post('/file')
+def create_document_from_file(
+        path: Annotated[str, Body()],
+        connection: Annotated[Connection, Depends(get_connection)]
+):
+    data = json.load(open(path))
+
+    cursor = connection.cursor()
+    cursor.execute('INSERT INTO documents (title, sports_category_id) VALUES (?, ?)',
+                   (data['title'], data['sports_category_id']))
+
+    connection.commit()
+
+    return Response(status_code=200)
+
 
 @router.post('/{document_id}/file')
 def get_document_to_file(

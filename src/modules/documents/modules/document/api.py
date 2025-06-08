@@ -29,22 +29,6 @@ def create_document(
     return JSONResponse(content={"data": {'id': id_}})
 
 
-@router.post('/file')
-def create_document_from_file(
-        path: Annotated[str, Body()],
-        connection: Annotated[Connection, Depends(get_connection)]
-):
-    data = json.load(open(path))
-
-    cursor = connection.cursor()
-    cursor.execute('INSERT INTO documents (title, sports_category_id) VALUES (?, ?)',
-                   (data['title'], data['sports_category_id']))
-
-    connection.commit()
-
-    return Response(status_code=200)
-
-
 @router.get('/{document_id}')
 def get_document(
         document_id: Annotated[int, Path()],
