@@ -72,7 +72,7 @@ def upload_order(
 ):
     cursor = connection.cursor()
 
-    cursor.execute("UPDATE databases SET date = ? WHERE slug = ?", (str(datetime.now().strftime('%d.%m.%Y')), "order"))
+    cursor.execute("UPDATE databases SET date = ? WHERE slug = ?", (str(datetime.now().strftime('%d.%m.%Y')), "orders"))
 
     destination_path = resource_path('resources/order.docx')
     shutil.copy(path, destination_path)
