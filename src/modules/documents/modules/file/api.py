@@ -13,7 +13,7 @@ router = APIRouter()
 
 @router.post('/file')
 def create_document_from_file(
-        path: Annotated[str, Body()],
+        path: Annotated[str, Body(embed=True)],
         connection: Annotated[Connection, Depends(get_connection)]
 ):
     data = json.load(open(path))["data"]
@@ -43,7 +43,7 @@ def create_document_from_file(
 @router.post('/{document_id}/file')
 def get_document_to_file(
         document_id: Annotated[int, Path()],
-        path: Annotated[str, Body()],
+        path: Annotated[str, Body(embed=True)],
         connection: Annotated[Connection, Depends(get_connection)]
 ):
     cursor = connection.cursor()

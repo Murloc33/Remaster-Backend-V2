@@ -9,7 +9,7 @@ from fastapi import Depends, APIRouter, Body, Path
 from starlette.responses import Response
 from typing_extensions import Annotated
 
-from core.methods import get_connection
+from core.methods import get_connection, resource_path
 
 router = APIRouter()
 
@@ -17,7 +17,7 @@ router = APIRouter()
 @router.post("/{document_id}/order")
 def create_order(
     document_id: Annotated[int, Path()],
-    path: Annotated[str, Body()],
+    path: Annotated[str, Body(embed=True)],
     connection: Annotated[Connection, Depends(get_connection)]
 ):
     cursor = connection.cursor()
@@ -36,7 +36,7 @@ def create_order(
     cursor.execute('SELECT name FROM sports_categories WHERE id = ?', (document_data["sports_category_id"],))
     categories_data = cursor.fetchone()
 
-    doc = Docx("../resources/Шаблон_приказа.docx")
+    doc = Docx(resource_path("resources/Шаблон_приказа.docx"))
     for paragraph in doc.paragraphs:
         if "%SportsСategory%" in paragraph.text:
             for run in paragraph.runs:

@@ -7,7 +7,7 @@ from openpyxl import load_workbook
 from starlette.responses import Response
 from typing_extensions import Annotated
 
-from core.methods import get_connection
+from core.methods import get_connection, resource_path
 from modules.databases.schemes import Databases
 
 router = APIRouter(prefix='/databases')
@@ -32,7 +32,7 @@ def convert_date(original_date: datetime):
 
 @router.put('/doping-athletes/upload')
 def upload_doping_athlete(
-    path: Annotated[str, Body()],
+    path: Annotated[str, Body(embed=True)],
     connection: Annotated[Connection, Depends(get_connection)]
 ):
     cursor = connection.cursor()
@@ -65,14 +65,14 @@ def upload_doping_athlete(
 
 @router.put('/orders/upload')
 def upload_order(
-    path: Annotated[str, Body()],
+    path: Annotated[str, Body(embed=True)],
     connection: Annotated[Connection, Depends(get_connection)]
 ):
     cursor = connection.cursor()
 
     cursor.execute("UPDATE databases SET date = ? WHERE slug = ?", (str(datetime.now().strftime('%d.%m.%Y')), "order"))
 
-    destination_path = "../resources/Шаблон_приказа.docx"
+    destination_path = resource_path('resources/Шаблон_приказа.docx')
     shutil.copy(path, destination_path)
 
     return Response()
@@ -80,7 +80,7 @@ def upload_order(
 
 @router.put('/doping-athletes/download')
 def download_doping_athlete(
-    path: Annotated[str, Body()],
+    path: Annotated[str, Body(embed=True)],
     connection: Annotated[Connection, Depends(get_connection)]
 ):
     return Response()
@@ -88,7 +88,7 @@ def download_doping_athlete(
 
 @router.put('/order/download')
 def download_order(
-    path: Annotated[str, Body()],
+    path: Annotated[str, Body(embed=True)],
     connection: Annotated[Connection, Depends(get_connection)]
 ):
     return Response()
