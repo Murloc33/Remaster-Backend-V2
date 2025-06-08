@@ -39,8 +39,8 @@ def main():
     cursor.execute(
         """
         INSERT INTO sports_categories (name)
-        VALUES ('КМС'),
-               ('1 спортивный')
+        VALUES ('кандидат в мастера спорта'),
+               ('первый спортивный разряд')
         """
     )
 
