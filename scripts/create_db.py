@@ -124,7 +124,7 @@ def main():
     cursor.execute(
         """
         INSERT INTO databases
-        VALUES ('order', 'Шаблон приказа', ''),
+        VALUES ('orders', 'Шаблон приказа', ''),
                ('doping-athletes', '(База) Русадо', ''),
                ('athletics', '(База) Легкая атлетика', ''),
                ('programming', '(База) Спортивное программирование', ''),

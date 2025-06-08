@@ -60,6 +60,8 @@ def upload_doping_athlete(
     cursor.execute('UPDATE databases SET date = ? WHERE slug = ?', (str(datetime.now().strftime('%d.%m.%Y')), "doping-athletes"))
     connection.commit()
 
+    shutil.copy(path, resource_path("resources/doping-athletes.xlsx"))
+
     return Response()
 
 
@@ -72,7 +74,7 @@ def upload_order(
 
     cursor.execute("UPDATE databases SET date = ? WHERE slug = ?", (str(datetime.now().strftime('%d.%m.%Y')), "order"))
 
-    destination_path = resource_path('resources/Шаблон_приказа.docx')
+    destination_path = resource_path('resources/order.docx')
     shutil.copy(path, destination_path)
 
     return Response()
@@ -81,14 +83,14 @@ def upload_order(
 @router.put('/doping-athletes/download')
 def download_doping_athlete(
     path: Annotated[str, Body(embed=True)],
-    connection: Annotated[Connection, Depends(get_connection)]
 ):
-    return Response()
+    shutil.copy(resource_path("resources/doping-athletes.xlsx"), path)
+    return Response(status_code=200)
 
 
-@router.put('/order/download')
+@router.put('/orders/download')
 def download_order(
     path: Annotated[str, Body(embed=True)],
-    connection: Annotated[Connection, Depends(get_connection)]
 ):
+    shutil.copy(resource_path("resources/order.docx"), path)
     return Response()

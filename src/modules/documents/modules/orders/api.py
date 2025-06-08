@@ -14,7 +14,7 @@ from core.methods import get_connection, resource_path
 router = APIRouter()
 
 
-@router.post("/{document_id}/order")
+@router.post("/{document_id}/orders")
 def create_order(
     document_id: Annotated[int, Path()],
     path: Annotated[str, Body(embed=True)],
@@ -36,7 +36,7 @@ def create_order(
     cursor.execute('SELECT name FROM sports_categories WHERE id = ?', (document_data["sports_category_id"],))
     categories_data = cursor.fetchone()
 
-    doc = Docx(resource_path("resources/Шаблон_приказа.docx"))
+    doc = Docx(resource_path("resources/order.docx"))
     for paragraph in doc.paragraphs:
         if "%SportsСategory%" in paragraph.text:
             for run in paragraph.runs:
