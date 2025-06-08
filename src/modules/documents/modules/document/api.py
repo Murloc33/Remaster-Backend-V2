@@ -1,5 +1,6 @@
 import json
 from sqlite3 import Connection
+from winreg import DeleteKey
 
 from fastapi import APIRouter, Depends, Body, Path
 from starlette.responses import Response, JSONResponse, FileResponse
@@ -74,6 +75,7 @@ def delete_document(
 ):
     cursor = connection.cursor()
 
+    cursor.execute('DELETE FROM document_athletes WHERE document_id = ?', (document_id,))
     cursor.execute('DELETE FROM documents WHERE id = ?', (document_id,))
     connection.commit()
 

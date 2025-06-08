@@ -9,6 +9,7 @@ class CreateDocument(BaseModel):
 
 
 class Athlete(BaseModel):
+    id: int
     full_name: str
     birth_date: str
     sport_id: int
