@@ -37,6 +37,7 @@ def create_order(
     categories_data = cursor.fetchone()
 
     doc = Docx(resource_path("resources/order.docx"))
+    print(resource_path("resources/order.docx"))
     for paragraph in doc.paragraphs:
         if "%SportsСategory%" in paragraph.text:
             for run in paragraph.runs:
