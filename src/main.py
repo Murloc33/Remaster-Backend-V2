@@ -9,8 +9,8 @@ from starlette.middleware.cors import CORSMiddleware
 
 from general.routers import main_router
 
-# app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
-app = FastAPI()
+app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+# app = FastAPI()
 
 # noinspection PyTypeChecker
 app.add_middleware(
@@ -40,4 +40,4 @@ if __name__ == "__main__":
     input_thread = threading.Thread(target=stdin_loop, daemon=True)
     input_thread.start()
 
-    uvicorn.run(app, port=1010)
+    uvicorn.run(app, port=1010, workers=1)

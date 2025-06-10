@@ -51,12 +51,11 @@ def put_athlete_file(
         cursor.execute(
             'INSERT INTO document_athletes (document_id, full_name, birth_date, sport_id, municipality, organization,'
             'is_sports_category_granted, is_doping_check_passed) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                       (
-                           document_id, athlete['full_name'], athlete['birth_date'], athlete['sport_id'], athlete['municipality'],
-                           athlete['organization'], athlete['is_sports_category_granted'], athlete['is_doping_check_passed']
-                       )
+            (
+                document_id, athlete['full_name'], athlete['birth_date'], athlete['sport_id'], athlete['municipality'],
+                athlete['organization'], athlete['is_sports_category_granted'], athlete['is_doping_check_passed']
+            )
         )
     connection.commit()
 
-    return Response(status_code=200)
-
+    return Response()

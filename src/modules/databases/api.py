@@ -8,6 +8,7 @@ from starlette.responses import Response
 from typing_extensions import Annotated
 
 from core.methods import get_connection, resource_path
+from modules.databases.methods import convert_date
 from modules.databases.schemes import Databases
 
 router = APIRouter(prefix='/databases')
@@ -22,13 +23,6 @@ def read_database(connection: Annotated[Connection, Depends(get_connection)]):
 
     return {"data": Databases.validate_python(result)}
 
-def convert_date(original_date: datetime):
-    if original_date == None:
-        return 'None'
-    try:
-        return original_date.strftime("%d.%m.%Y")
-    except AttributeError:
-        return original_date
 
 @router.put('/doping-athletes/upload')
 def upload_doping_athlete(
@@ -75,8 +69,7 @@ def upload_order(
     cursor.execute("UPDATE databases SET date = ? WHERE slug = ?", (str(datetime.now().strftime('%d.%m.%Y')), "orders"))
     connection.commit()
 
-    destination_path = resource_path('resources/order.docx')
-    shutil.copy(path, destination_path)
+    shutil.copy(path, resource_path('resources/order.docx'))
 
     return Response()
 
@@ -86,7 +79,7 @@ def download_doping_athlete(
     path: Annotated[str, Body(embed=True)],
 ):
     shutil.copy(resource_path("resources/doping-athletes.xlsx"), path)
-    return Response(status_code=200)
+    return Response()
 
 
 @router.put('/orders/download')

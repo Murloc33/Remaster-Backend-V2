@@ -22,7 +22,7 @@ def resource_path(relative_path: str):
 
 
 def get_connection() -> Generator[Connection, Any, None]:
-    connection = sqlite3.connect(resource_path('resources/remaster.db'))
+    connection = sqlite3.connect(resource_path('resources/remaster.db'), check_same_thread=False)
     connection.row_factory = dict_factory
 
     try:

@@ -4,7 +4,7 @@ from modules.athletes.general.routers import main_athletes_router
 from modules.databases.api import router as databases_router
 from modules.documents.general.routers import main_documents_router
 from modules.doping_athletes.api import router as doping_athletes
-from modules.spots.api import router as spots_router
+from modules.sports.api import router as spots_router
 
 main_router = APIRouter()
 

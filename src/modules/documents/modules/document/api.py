@@ -1,9 +1,7 @@
-import json
 from sqlite3 import Connection
-from winreg import DeleteKey
 
 from fastapi import APIRouter, Depends, Body, Path
-from starlette.responses import Response, JSONResponse, FileResponse
+from starlette.responses import Response, JSONResponse
 from typing_extensions import Annotated
 
 from core.methods import get_connection
@@ -14,8 +12,8 @@ router = APIRouter()
 
 @router.post('/')
 def create_document(
-        document: Annotated[CreateDocument, Body()],
-        connection: Annotated[Connection, Depends(get_connection)]
+    document: Annotated[CreateDocument, Body()],
+    connection: Annotated[Connection, Depends(get_connection)]
 ):
     cursor = connection.cursor()
 
@@ -32,8 +30,8 @@ def create_document(
 
 @router.get('/{document_id}')
 def get_document(
-        document_id: Annotated[int, Path()],
-        connection: Annotated[Connection, Depends(get_connection)]
+    document_id: Annotated[int, Path()],
+    connection: Annotated[Connection, Depends(get_connection)]
 ):
     cursor = connection.cursor()
 
@@ -53,9 +51,9 @@ def get_document(
 
 @router.put('/{document_id}')
 def update_document(
-        document_id: Annotated[int, Path()],
-        document: Annotated[UpdateDocument, Body()],
-        connection: Annotated[Connection, Depends(get_connection)]
+    document_id: Annotated[int, Path()],
+    document: Annotated[UpdateDocument, Body()],
+    connection: Annotated[Connection, Depends(get_connection)]
 ):
     cursor = connection.cursor()
 
@@ -70,8 +68,8 @@ def update_document(
 
 @router.delete('/{document_id}')
 def delete_document(
-        document_id: Annotated[int, Path()],
-        connection: Annotated[Connection, Depends(get_connection)]
+    document_id: Annotated[int, Path()],
+    connection: Annotated[Connection, Depends(get_connection)]
 ):
     cursor = connection.cursor()
 

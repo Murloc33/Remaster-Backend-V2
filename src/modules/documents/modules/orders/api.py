@@ -36,15 +36,17 @@ def create_order(
                                 'm': athlete.municipality,
                                 'o': athlete.organization
                             } for athlete_number, athlete in enumerate(sport.athletes, start=1)
-                        ] + ([
-                                 {
-                                     'n': '',
-                                     'name': '',
-                                     'date': '',
-                                     'm': '',
-                                     'o': ''
-                                 }
-                             ] if sport_number != len(order.sports) else [])
+                        ] + (
+                            [
+                                {
+                                    'n': '',
+                                    'name': '',
+                                    'date': '',
+                                    'm': '',
+                                    'o': ''
+                                }
+                            ] if sport_number != len(order.sports) else []
+                        )
                     )
                 } for sport_number, sport in enumerate(order.sports, start=1)
             ]

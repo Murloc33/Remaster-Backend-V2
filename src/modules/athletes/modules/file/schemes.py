@@ -12,4 +12,5 @@ class Athlete(BaseModel):
     is_sports_category_granted: bool
     is_doping_check_passed: bool
 
+
 Athletes = TypeAdapter(List[Athlete])

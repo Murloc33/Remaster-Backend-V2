@@ -1,6 +1,5 @@
-from typing_extensions import Annotated, List
-
 from pydantic import BaseModel, Field
+from typing_extensions import Annotated, List
 
 
 class Athletes(BaseModel):
