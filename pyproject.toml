@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Add your description here"
 requires-python = "==3.8.20"
 dependencies = [
+    "docxtpl>=0.20.0",
     "fastapi>=0.115.12",
     "openpyxl>=3.1.5",
     "pyinstaller>=6.14.0",

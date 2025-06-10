@@ -201,7 +201,43 @@ def main():
         """
     )
 
-    cur
+    cursor.execute(
+        """
+        CREATE TABLE computer_sport_type 
+        (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE
+        )
+        """
+    )
+
+    cursor.execute(
+        """
+        INSERT INTO computer_sport_type (name)
+        VALUES ('Боевая арена, соревновательные головоломки, стратегия в реальном времени, файтинг, тактический трехмерный бой'),
+               ('Спортивный симулятор, технический симулятор')
+        """
+    )
+
+    cursor.execute(
+        """
+        CREATE TABLE competition_filters_computer_sport
+        (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            sports_categories_id INTEGER NOT NULL,
+            place_from INTEGER NOT NULL,
+            place_to  INTEGER NOT NULL,
+            competition_status_id INTEGER NOT NULL,
+            age_from  INTEGER NOT NULL,
+            age_to  INTEGER NOT NULL,
+            match_win INTEGER NOT NULL,
+            computer_sport_type_id INTEGER NOT NULL,
+            FOREIGN KEY (sports_categories_id) REFERENCES sports_categories (id),
+            FOREIGN KEY (competition_status_id) REFERENCES competition_status (id),
+            FOREIGN KEY (computer_sport_type_id) REFERENCES computer_sport_type (id)
+        )
+        """
+    )
 
     connection.commit()
     print("База данных успешно инициализирована")
