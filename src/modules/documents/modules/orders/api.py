@@ -95,7 +95,10 @@ def create_order(
                 paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
             cursor.execute('SELECT * FROM sports WHERE id = ?', (row_data["sport_id"],))
             categories_data = cursor.fetchone()
-            row_cells[1].text = categories_data["name"]
+            if categories_data["name"] == 'КМС':
+                row_cells[1].text = 'кандидат в мастера спорта'
+            else:
+                row_cells[1].text = 'первый спортивный разряд'
             row_cells[1].merge(row_cells[4])
             for paragraph in row_cells[1].paragraphs:
                 paragraph.alignment = WD_ALIGN_PARAGRAPH.LEFT

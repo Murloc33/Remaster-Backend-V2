@@ -39,8 +39,8 @@ def main():
     cursor.execute(
         """
         INSERT INTO sports_categories (name)
-        VALUES ('кандидат в мастера спорта'),
-               ('первый спортивный разряд')
+        VALUES ('КМС'),
+               ('1 спортивный')
         """
     )
 
@@ -131,6 +131,77 @@ def main():
                ('computer-sport', '(База) Компьютерный спорт', '')
         """
     )
+
+    cursor.execute(
+        """
+        CREATE TABLE competition_status
+        (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE
+        )
+        """
+    )
+
+    cursor.execute(
+        """
+        CREATE TABLE sex
+        (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE
+        )
+        """
+    )
+
+    cursor.execute(
+        """
+        INSERT INTO sex (name)
+        VALUES ('М'),
+               ('Ж'),
+               ('Оба')
+        """
+    )
+
+    cursor.execute(
+        """
+        INSERT INTO competition_status (name)
+        VALUES ('Чемпионат мира'),
+               ('Чемпионат Европы'),
+               ('Первенство мира'),
+               ('Всемирные студенческие игры'),
+               ('Первенство Европы'),
+               ('Другие международные спортивные соревнования, включенные в ЕКП'),
+               ('Чемпионат России'),
+               ('Кубок России (при двух и более этапах – финал)'),
+               ('Первенство России'),
+               ('Другие всероссийские спортивные соревнования, включенные в ЕКП'),
+               ('Чемпионат  федерального округа, двух и более федеральных округов'),
+               ('Первенство федерального округа, двух и более федеральных округов'),
+               ('Другие межрегиональные спортивные соревнования, включенные в ЕКП'),
+               ('Чемпионат субъекта Российской Федерации'),
+               ('Кубок субъекта Российской Федерации (при двух и более этапах – финал)')
+        """
+    )
+
+    cursor.execute(
+        """
+        CREATE TABLE competition_filters_sports_programming
+        (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            sports_categories_id INTEGER NOT NULL,
+            place_from INTEGER NOT NULL,
+            place_to  INTEGER NOT NULL,
+            competition_status_id INTEGER NOT NULL,
+            age_from  INTEGER NOT NULL,
+            age_to  INTEGER NOT NULL,
+            sex_id INTEGER NOT NULL,
+            FOREIGN KEY (sports_categories_id) REFERENCES sports_categories (id),
+            FOREIGN KEY (competition_status_id) REFERENCES competition_status (id),
+            FOREIGN KEY (sex_id) REFERENCES  sex (id)
+        )
+        """
+    )
+
+    cur
 
     connection.commit()
     print("База данных успешно инициализирована")
