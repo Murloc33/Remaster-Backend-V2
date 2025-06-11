@@ -9,8 +9,8 @@ from starlette.middleware.cors import CORSMiddleware
 
 from general.routers import main_router
 
-app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
-# app = FastAPI()
+# app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+app = FastAPI()
 
 # noinspection PyTypeChecker
 app.add_middleware(

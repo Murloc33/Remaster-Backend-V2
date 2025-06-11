@@ -163,23 +163,6 @@ def main():
         """
     )
 
-    cursor.execute(
-        """
-        CREATE TABLE sports_programming_sports_disciplines
-        (
-            id   INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL UNIQUE
-        )
-        """
-    )
-
-    cursor.execute(
-        """
-        INSERT INTO sports_programming_sports_disciplines (name)
-        VALUES ("Программирование алгоритмическое, программирование робототехники, программирование систем информационной 
-                   безопасности, программирование продуктовое, программирование беспилотных авиационных систем")
-        """
-    )
 
     cursor.execute(
         """
@@ -187,7 +170,6 @@ def main():
         (
             id                    INTEGER PRIMARY KEY AUTOINCREMENT,
 
-            sports_discipline_id  INTEGER NOT NULL,
             sports_category_id  INTEGER NOT NULL,
             competition_status_id INTEGER NOT NULL,
 
@@ -197,9 +179,8 @@ def main():
             age_from              INTEGER NOT NULL,
             age_to                INTEGER,
 
-            FOREIGN KEY (sports_discipline_id) REFERENCES sports_programming_sports_disciplines (id),
             FOREIGN KEY (sports_category_id) REFERENCES sports_categories (id),
-            FOREIGN KEY (competition_status_id) REFERENCES sports_programming_competition_statuses (id),
+            FOREIGN KEY (competition_status_id) REFERENCES sports_programming_competition_statuses (id)
         )
         """
     )
