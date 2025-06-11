@@ -134,9 +134,9 @@ def main():
 
     cursor.execute(
         """
-        CREATE TABLE competition_status
+        CREATE TABLE sports_programming_competition_statuses
         (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id   INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL UNIQUE
         )
         """
@@ -144,26 +144,7 @@ def main():
 
     cursor.execute(
         """
-        CREATE TABLE sex
-        (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL UNIQUE
-        )
-        """
-    )
-
-    cursor.execute(
-        """
-        INSERT INTO sex (name)
-        VALUES ('М'),
-               ('Ж'),
-               ('Оба')
-        """
-    )
-
-    cursor.execute(
-        """
-        INSERT INTO competition_status (name)
+        INSERT INTO sports_programming_competition_statuses (name)
         VALUES ('Чемпионат мира'),
                ('Чемпионат Европы'),
                ('Первенство мира'),
@@ -174,7 +155,7 @@ def main():
                ('Кубок России (при двух и более этапах – финал)'),
                ('Первенство России'),
                ('Другие всероссийские спортивные соревнования, включенные в ЕКП'),
-               ('Чемпионат  федерального округа, двух и более федеральных округов'),
+               ('Чемпионат федерального округа, двух и более федеральных округов'),
                ('Первенство федерального округа, двух и более федеральных округов'),
                ('Другие межрегиональные спортивные соревнования, включенные в ЕКП'),
                ('Чемпионат субъекта Российской Федерации'),
@@ -184,28 +165,9 @@ def main():
 
     cursor.execute(
         """
-        CREATE TABLE competition_filters_sports_programming
+        CREATE TABLE sports_programming_sports_disciplines
         (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            sports_categories_id INTEGER NOT NULL,
-            place_from INTEGER NOT NULL,
-            place_to  INTEGER NOT NULL,
-            competition_status_id INTEGER NOT NULL,
-            age_from  INTEGER NOT NULL,
-            age_to  INTEGER NOT NULL,
-            sex_id INTEGER NOT NULL,
-            FOREIGN KEY (sports_categories_id) REFERENCES sports_categories (id),
-            FOREIGN KEY (competition_status_id) REFERENCES competition_status (id),
-            FOREIGN KEY (sex_id) REFERENCES  sex (id)
-        )
-        """
-    )
-
-    cursor.execute(
-        """
-        CREATE TABLE computer_sport_type 
-        (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id   INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL UNIQUE
         )
         """
@@ -213,31 +175,72 @@ def main():
 
     cursor.execute(
         """
-        INSERT INTO computer_sport_type (name)
-        VALUES ('Боевая арена, соревновательные головоломки, стратегия в реальном времени, файтинг, тактический трехмерный бой'),
-               ('Спортивный симулятор, технический симулятор')
+        INSERT INTO sports_programming_sports_disciplines (name)
+        VALUES ("Программирование алгоритмическое, программирование робототехники, программирование систем информационной 
+                   безопасности, программирование продуктовое, программирование беспилотных авиационных систем")
         """
     )
 
     cursor.execute(
         """
-        CREATE TABLE competition_filters_computer_sport
+        CREATE TABLE sports_programming
         (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            sports_categories_id INTEGER NOT NULL,
-            place_from INTEGER NOT NULL,
-            place_to  INTEGER NOT NULL,
+            id                    INTEGER PRIMARY KEY AUTOINCREMENT,
+
+            sports_discipline_id  INTEGER NOT NULL,
+            sports_category_id  INTEGER NOT NULL,
             competition_status_id INTEGER NOT NULL,
-            age_from  INTEGER NOT NULL,
-            age_to  INTEGER NOT NULL,
-            match_win INTEGER NOT NULL,
-            computer_sport_type_id INTEGER NOT NULL,
-            FOREIGN KEY (sports_categories_id) REFERENCES sports_categories (id),
-            FOREIGN KEY (competition_status_id) REFERENCES competition_status (id),
-            FOREIGN KEY (computer_sport_type_id) REFERENCES computer_sport_type (id)
+
+            place_from            INTEGER NOT NULL,
+            place_to              INTEGER NOT NULL,
+
+            age_from              INTEGER NOT NULL,
+            age_to                INTEGER,
+
+            FOREIGN KEY (sports_discipline_id) REFERENCES sports_programming_sports_disciplines (id),
+            FOREIGN KEY (sports_category_id) REFERENCES sports_categories (id),
+            FOREIGN KEY (competition_status_id) REFERENCES sports_programming_competition_statuses (id),
         )
         """
     )
+
+    # cursor.execute(
+    #     """
+    #     CREATE TABLE computer_sport_type
+    #     (
+    #         id INTEGER PRIMARY KEY AUTOINCREMENT,
+    #         name TEXT NOT NULL UNIQUE
+    #     )
+    #     """
+    # )
+    #
+    # cursor.execute(
+    #     """
+    #     INSERT INTO computer_sport_type (name)
+    #     VALUES ('Боевая арена, соревновательные головоломки, стратегия в реальном времени, файтинг, тактический трехмерный бой'),
+    #            ('Спортивный симулятор, технический симулятор')
+    #     """
+    # )
+    #
+    # cursor.execute(
+    #     """
+    #     CREATE TABLE competition_filters_computer_sport
+    #     (
+    #         id INTEGER PRIMARY KEY AUTOINCREMENT,
+    #         sports_categories_id INTEGER NOT NULL,
+    #         place_from INTEGER NOT NULL,
+    #         place_to  INTEGER NOT NULL,
+    #         competition_status_id INTEGER NOT NULL,
+    #         age_from  INTEGER NOT NULL,
+    #         age_to  INTEGER NOT NULL,
+    #         match_win INTEGER NOT NULL,
+    #         computer_sport_type_id INTEGER NOT NULL,
+    #         FOREIGN KEY (sports_categories_id) REFERENCES sports_categories (id),
+    #         FOREIGN KEY (competition_status_id) REFERENCES competition_status (id),
+    #         FOREIGN KEY (computer_sport_type_id) REFERENCES computer_sport_type (id)
+    #     )
+    #     """
+    # )
 
     connection.commit()
     print("База данных успешно инициализирована")
