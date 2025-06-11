@@ -18,7 +18,6 @@ def get_data(connection: Annotated[Connection, Depends(get_connection)]):
 
 @router.post('/check-result')
 def check_result(
-    sports_discipline_id: Annotated[int, Body()],
     sports_category_id: Annotated[int, Body()],
     competition_status_id: Annotated[int, Body()],
     place: Annotated[int, Body()],
