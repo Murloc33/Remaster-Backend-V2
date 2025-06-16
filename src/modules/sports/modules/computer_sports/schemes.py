@@ -7,7 +7,6 @@ class CompetitionStatus(BaseModel):
     id: int
     name: str
 
-
-class SportsProgrammingData(BaseModel):
+class ComputerSportsData(BaseModel):
     competition_statuses: List[CompetitionStatus]
-    
+

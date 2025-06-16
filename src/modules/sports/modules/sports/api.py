@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from typing_extensions import Annotated
 
 from core.methods import get_connection
-from modules.sports.modules.sports_programming.schemes import Sports
+from modules.sports.modules.sports.schemes import Sports
 
 router = APIRouter()
 
