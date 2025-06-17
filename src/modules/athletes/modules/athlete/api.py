@@ -1,4 +1,6 @@
+import json
 from sqlite3 import Connection
+from typing import Any
 
 from fastapi import APIRouter, Depends, Path, Body
 from starlette.responses import Response, JSONResponse
@@ -60,3 +62,75 @@ def delete_athlete(
     connection.commit()
 
     return Response()
+
+@router.put('/{athlete_id}/result')
+def update_athlete(
+    data: Annotated[Any, Body()],
+    athlete_id: Annotated[int, Path()],
+    connection: Annotated[Connection, Depends(get_connection)]
+):
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        UPDATE document_athletes SET result_data = ? WHERE id = ?
+        """,
+        (json.dumps(data), athlete_id)
+    )
+
+    connection.commit()
+    return Response()
+
+@router.put('/{athlete_id}/doping')
+def update_athlete(
+    data: Annotated[Any, Body()],
+    athlete_id: Annotated[int, Path()],
+    connection: Annotated[Connection, Depends(get_connection)]
+):
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        UPDATE document_athletes SET doping_data = ? WHERE id = ?
+        """,
+        (json.dumps(data), athlete_id)
+    )
+
+    connection.commit()
+    return Response()
+
+@router.get('/{athlete_id}/doping')
+def update_athlete(
+    athlete_id: Annotated[int, Path()],
+    connection: Annotated[Connection, Depends(get_connection)]
+):
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT doping_data FROM document_athletes WHERE id = ?
+        """,
+        (athlete_id,)
+    )
+
+    connection.commit()
+
+    return json.dumps({"data" : cursor.fetchone()["doping_data"]})
+
+@router.get('/{athlete_id}/result')
+def update_athlete(
+    athlete_id: Annotated[int, Path()],
+    connection: Annotated[Connection, Depends(get_connection)]
+):
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT result_data FROM document_athletes WHERE id = ?
+        """,
+        (athlete_id,)
+    )
+
+    connection.commit()
+
+    return json.dumps({"data" : cursor.fetchone()["result_data"]})

@@ -90,6 +90,8 @@ def main():
             is_sports_category_granted BOOLEAN NOT NULL,
             is_doping_check_passed     BOOLEAN NOT NULL,
             created_at                 TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            doping_data                ANY NULL,
+            result_data                ANY NULL,
             FOREIGN KEY (document_id) REFERENCES documents (id),
             FOREIGN KEY (sport_id) REFERENCES sports (id)
         )
@@ -163,14 +165,13 @@ def main():
         """
     )
 
-
     cursor.execute(
         """
         CREATE TABLE sports_programming
         (
             id                    INTEGER PRIMARY KEY AUTOINCREMENT,
 
-            sports_category_id  INTEGER NOT NULL,
+            sports_category_id    INTEGER NOT NULL,
             competition_status_id INTEGER NOT NULL,
 
             place_from            INTEGER NOT NULL,
@@ -219,7 +220,7 @@ def main():
         """
         CREATE TABLE computer_sport_discipline
         (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id   INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL UNIQUE
         )
         """
@@ -229,12 +230,12 @@ def main():
         """
         INSERT INTO computer_sport_discipline (name)
         VALUES ('Боевая арена'),
-            ('Cоревновательные головоломки'),
-            ('Cтратегия в реальном времени'),
-            ('Файтинг'),
-            ('Тактический трехмерный бой'),
-            ('Спортивный симулятор'),
-            ('Технический симулятор')
+               ('Cоревновательные головоломки'),
+               ('Cтратегия в реальном времени'),
+               ('Файтинг'),
+               ('Тактический трехмерный бой'),
+               ('Спортивный симулятор'),
+               ('Технический симулятор')
         """
     )
 
@@ -242,23 +243,174 @@ def main():
         """
         CREATE TABLE computer_sport
         (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id                    INTEGER PRIMARY KEY AUTOINCREMENT,
             competition_status_id INTEGER NOT NULL,
-            discipline_id INTEGER NOT NULL,
-            sports_category_id INTEGER NOT NULL,
-            
-            place_from INTEGER NOT NULL,
-            place_to  INTEGER NOT NULL,
-            
-            win_match  INTEGER NOT NULL,
-            
+            discipline_id         INTEGER NOT NULL,
+            sports_category_id    INTEGER NOT NULL,
+
+            place_from            INTEGER NOT NULL,
+            place_to              INTEGER NOT NULL,
+
+            win_match             INTEGER NOT NULL,
+
             is_internally_subject BOOLEAN NOT NULL,
-            subject_from INTEGER NULL,
-            subject_to INTEGER NULL,
-            
+            subject_from          INTEGER NULL,
+            subject_to            INTEGER NULL,
+
             FOREIGN KEY (competition_status_id) REFERENCES computer_sport_competition_statuses (id),
             FOREIGN KEY (discipline_id) REFERENCES computer_sport_discipline (id),
             FOREIGN KEY (sports_category_id) REFERENCES sports_categories (id)
+        )
+        """
+    )
+
+    cursor.execute(
+        """
+        CREATE TABLE sex
+        (
+            id   INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE
+        )
+        """
+    )
+
+    cursor.execute(
+        """
+        INSERT INTO sex (name)
+        VALUES ('М'),
+               ('Ж'),
+               ('Оба')
+        """
+    )
+
+    cursor.execute(
+        """
+        CREATE TABLE athletics_discipline_contents
+        (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE
+        )
+        """
+    )
+
+    cursor.execute(
+        """
+        CREATE TABLE athletics_based_on_place_disciplines
+        (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE
+        )
+        """
+    )
+
+    cursor.execute(
+        """
+        CREATE TABLE system_counting
+        (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE
+        )
+        """
+    )
+
+    cursor.execute(
+        """
+        INSERT INTO system_counting (name)
+        VALUES ('секунды'),
+               ('минуты')
+        """
+    )
+
+    cursor.execute(
+        """
+        CREATE TABLE athletics_discipline
+        (
+            id   INTEGER PRIMARY KEY AUTOINCREMENT,
+            sex_id INTEGER NOT NULL,
+            name TEXT NOT NULL UNIQUE,
+            system_counting_id INTEGER NOT NULL,
+            
+            FOREIGN KEY (sex_id) REFERENCES sex (id),
+            FOREIGN KEY (system_counting_id) REFERENCES system_counting (id)
+        )
+        """
+    )
+
+    cursor.execute(
+        """
+        CREATE TABLE athletics_adapter_disciplines
+        (
+            based_on_place_discipline_id INTEGER NOT NULL,
+            discipline_id INTEGER NOT NULL,
+            FOREIGN KEY (based_on_place_discipline_id) REFERENCES athletics_based_on_place_disciplines (id),
+            FOREIGN KEY (discipline_id) REFERENCES athletics_discipline (id)
+        )
+        """
+    )
+
+    cursor.execute(
+        """
+        CREATE TABLE athletics_competition_statuses
+        (
+            id   INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE
+        )
+        """
+    )
+
+    cursor.execute(
+        """
+        INSERT INTO athletics_competition_statuses (name)
+        VALUES ('')
+        """
+    )
+
+    cursor.execute(
+        """
+        CREATE TABLE athletics_based_on_place_records
+        (
+            id   INTEGER PRIMARY KEY AUTOINCREMENT,
+            competition_status_id INTEGER NOT NULL,
+            based_on_place_discipline_id INTEGER NOT NULL,
+            sports_category_id INTEGER NOT NULL,
+            
+            age_from INTEGER NOT NULL,
+            age_to INTEGER NULL,
+            
+            place_from  INTEGER NOT NULL,
+            place_to  INTEGER NOT NULL,
+            
+            min_count_participants INTEGER NOT NULL,
+            
+            FOREIGN KEY (competition_status_id) REFERENCES athletics_competition_statuses (id),
+            FOREIGN KEY (based_on_place_discipline_id) REFERENCES athletics_based_on_place_disciplines (id),
+            FOREIGN KEY (sports_category_id) REFERENCES sports_categories (id)
+        )
+        """
+    )
+
+    cursor.execute(
+        """
+        CREATE TABLE athletics_based_on_result_records
+        (
+            id                           INTEGER PRIMARY KEY AUTOINCREMENT,
+            competition_status_id        INTEGER NOT NULL,
+            discipline_id                INTEGER NOT NULL,
+            discipline_content_id        INTEGER NOT NULL,
+            sports_category_id           INTEGER NOT NULL,
+            sex_id                       INTEGER NOT NULL,
+
+            age_from                     INTEGER NOT NULL,
+            age_to                       INTEGER NULL,
+    
+            min_result                   INTEGER NOT NULL,
+            min_count_participants       INTEGER NOT NULL,
+
+            FOREIGN KEY (competition_status_id) REFERENCES athletics_competition_statuses (id),
+            FOREIGN KEY (discipline_content_id) REFERENCES athletics_discipline_contents (id),
+            FOREIGN KEY (discipline_id) REFERENCES athletics_discipline (id),
+            FOREIGN KEY (sports_category_id) REFERENCES sports_categories (id),
+            FOREIGN KEY (sex_id) REFERENCES  sex (id)
         )
         """
     )
