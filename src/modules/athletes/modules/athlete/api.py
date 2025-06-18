@@ -1,6 +1,6 @@
 import json
 from sqlite3 import Connection
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import APIRouter, Depends, Path, Body
 from starlette.responses import Response, JSONResponse
@@ -63,74 +63,37 @@ def delete_athlete(
 
     return Response()
 
-@router.put('/{athlete_id}/result')
-def update_athlete(
-    data: Annotated[Any, Body()],
+
+@router.get('/{athlete_id}/{slug}')
+def get_checker_data(
     athlete_id: Annotated[int, Path()],
+    slug: Annotated[Literal['doping', 'result'], Path()],
     connection: Annotated[Connection, Depends(get_connection)]
 ):
     cursor = connection.cursor()
 
     cursor.execute(
-        """
-        UPDATE document_athletes SET result_data = ? WHERE id = ?
-        """,
-        (json.dumps(data), athlete_id)
-    )
-
-    connection.commit()
-    return Response()
-
-@router.put('/{athlete_id}/doping')
-def update_athlete(
-    data: Annotated[Any, Body()],
-    athlete_id: Annotated[int, Path()],
-    connection: Annotated[Connection, Depends(get_connection)]
-):
-    cursor = connection.cursor()
-
-    cursor.execute(
-        """
-        UPDATE document_athletes SET doping_data = ? WHERE id = ?
-        """,
-        (json.dumps(data), athlete_id)
-    )
-
-    connection.commit()
-    return Response()
-
-@router.get('/{athlete_id}/doping')
-def update_athlete(
-    athlete_id: Annotated[int, Path()],
-    connection: Annotated[Connection, Depends(get_connection)]
-):
-    cursor = connection.cursor()
-
-    cursor.execute(
-        """
-        SELECT doping_data FROM document_athletes WHERE id = ?
-        """,
+        f"SELECT {slug}_data FROM document_athletes WHERE id = ?",
         (athlete_id,)
     )
-
     connection.commit()
 
-    return json.dumps({"data" : cursor.fetchone()["doping_data"]})
+    return {"data": json.loads(cursor.fetchone())}
 
-@router.get('/{athlete_id}/result')
-def update_athlete(
+
+@router.put('/{athlete_id}/{slug}')
+def update_checker_data(
     athlete_id: Annotated[int, Path()],
+    slug: Annotated[Literal['doping', 'result'], Path()],
+    data: Annotated[Any, Body()],
     connection: Annotated[Connection, Depends(get_connection)]
 ):
     cursor = connection.cursor()
 
     cursor.execute(
-        """
-        SELECT result_data FROM document_athletes WHERE id = ?
-        """,
-        (athlete_id,)
+        f"UPDATE document_athletes SET {slug}_data = ? WHERE id = ?",
+        (json.dumps(data), athlete_id)
     )
-
     connection.commit()
 
-    return json.dumps({"data" : cursor.fetchone()["result_data"]})
+    return Response()
