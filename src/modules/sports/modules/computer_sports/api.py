@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlite3 import Connection
-from typing import Optional, Union
+from typing import Union
 
 from dateutil.relativedelta import relativedelta
 from dateutil.tz import UTC
@@ -34,18 +34,18 @@ def get_data(connection: Annotated[Connection, Depends(get_connection)]):
 
 @router.post('/data')
 def get_data_additional_condition(
-        sports_category_id: Annotated[int, Body()],
-        competition_status_id: Annotated[int, Body()],
-        place: Annotated[int, Body()],
-        birth_date: Annotated[AwareDatetime, Body()],
-        win_math: Annotated[int, Body()],
-        discipline_id: Annotated[int, Body()],
-        connection: Annotated[Connection, Depends(get_connection)]
+    sports_category_id: Annotated[int, Body()],
+    competition_status_id: Annotated[int, Body()],
+    place: Annotated[int, Body()],
+    birth_date: Annotated[AwareDatetime, Body()],
+    win_math: Annotated[int, Body()],
+    discipline_id: Annotated[int, Body()],
+    connection: Annotated[Connection, Depends(get_connection)]
 ):
     cursor = connection.cursor()
     cursor.execute(
         """
-        SELECT (is_internally_subject)
+        SELECT is_internally_subject
         FROM computer_sport
         WHERE competition_status_id = ?
         """,
@@ -56,7 +56,7 @@ def get_data_additional_condition(
 
     age = relativedelta(datetime.now(tz=UTC), birth_date).years
     if (sports_category_id == 1 and age < 16) or (sports_category_id == 2 and age < 14):
-        return {"data": {"is_internally_subject": is_internally_subject, "subjects_data" : []}}
+        return {"data": {"is_internally_subject": is_internally_subject, "subjects_data": []}}
 
     cursor = connection.cursor()
 
@@ -65,9 +65,9 @@ def get_data_additional_condition(
         SELECT subject_from, subject_to
         FROM computer_sport
         WHERE competition_status_id = ?
-        AND discipline_id = ? 
-        AND ? BETWEEN place_from AND place_to
-        AND ? >= win_match
+          AND discipline_id = ?
+          AND ? BETWEEN place_from AND place_to
+          AND ? >= win_match
         """,
         (
             competition_status_id, discipline_id, place, win_math
@@ -76,23 +76,21 @@ def get_data_additional_condition(
 
     subject_data = cursor.fetchall()
 
-    return JSONResponse(content={"data" :SubjectsData(is_internally_subject=is_internally_subject,subjects=subject_data).model_dump()})
-
-
+    return JSONResponse(
+        content={"data": SubjectsData(is_internally_subject=is_internally_subject, subjects=subject_data).model_dump()})
 
 
 @router.post('/check-result')
 def check_result(
-        sports_category_id: Annotated[int, Body()],
-        competition_status_id: Annotated[int, Body()],
-        place: Annotated[int, Body()],
-        birth_date: Annotated[AwareDatetime, Body()],
-        win_math: Annotated[int, Body()],
-        first_additional: Annotated[bool, Body()],
-        second_additional: Annotated[bool, Body()],
-        third_additional: Annotated[bool, Body()],
-
-        connection: Annotated[Connection, Depends(get_connection)]
+    sports_category_id: Annotated[int, Body()],
+    competition_status_id: Annotated[int, Body()],
+    place: Annotated[int, Body()],
+    birth_date: Annotated[AwareDatetime, Body()],
+    win_math: Annotated[int, Body()],
+    connection: Annotated[Connection, Depends(get_connection)],
+    first_additional: Annotated[Union[bool, None], Body()] = None,
+    second_additional: Annotated[Union[bool, None], Body()] = None,
+    third_additional: Annotated[Union[bool, None], Body()] = None
 ):
     age = relativedelta(datetime.now(tz=UTC), birth_date).years
     if (sports_category_id == 1 and age < 16) or (sports_category_id == 2 and age < 14):
@@ -109,7 +107,8 @@ def check_result(
         )
     )
 
-    if (first_additional is None or first_additional == True) or (second_additional is None or second_additional == True) and (third_additional is None or third_additional == True):
+    if (first_additional is None or first_additional == True) or (second_additional is None or second_additional == True) and (
+        third_additional is None or third_additional == True):
         result = len(cursor.fetchall())
         return {"data": {"is_sports_category_granted": result > 0}}
 
