@@ -102,3 +102,4 @@ def update_checker_data(
     connection.commit()
 
     return Response()
+

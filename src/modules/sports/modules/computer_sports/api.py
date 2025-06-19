@@ -82,15 +82,16 @@ def get_data_additional_condition(
 
 @router.post('/check-result')
 def check_result(
-    sports_category_id: Annotated[int, Body()],
-    competition_status_id: Annotated[int, Body()],
-    place: Annotated[int, Body()],
-    birth_date: Annotated[AwareDatetime, Body()],
-    win_math: Annotated[int, Body()],
-    connection: Annotated[Connection, Depends(get_connection)],
-    first_additional: Annotated[Union[bool, None], Body()] = None,
-    second_additional: Annotated[Union[bool, None], Body()] = None,
-    third_additional: Annotated[Union[bool, None], Body()] = None
+        sports_category_id: Annotated[int, Body()],
+        competition_status_id: Annotated[int, Body()],
+        place: Annotated[int, Body()],
+        birth_date: Annotated[AwareDatetime, Body()],
+        win_math: Annotated[int, Body()],
+        discipline_id: Annotated[int, Body()],
+        first_additional: Annotated[bool, Body()],
+        second_additional: Annotated[bool, Body()],
+        third_additional: Annotated[bool, Body()],
+        connection: Annotated[Connection, Depends(get_connection)]
 ):
     age = relativedelta(datetime.now(tz=UTC), birth_date).years
     if (sports_category_id == 1 and age < 16) or (sports_category_id == 2 and age < 14):
@@ -101,9 +102,9 @@ def check_result(
     cursor.execute(
         'SELECT * FROM computer_sport WHERE sports_category_id = ? '
         'AND ? BETWEEN place_from AND place_to AND competition_status_id = ? '
-        'AND ? >= win_match',
+        'AND ? >= win_match AND discipline_id = ?',
         (
-            sports_category_id, place, competition_status_id, win_math
+            sports_category_id, place, competition_status_id, win_math, discipline_id
         )
     )
 
