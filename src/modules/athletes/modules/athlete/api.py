@@ -78,7 +78,12 @@ def get_checker_data(
     )
     connection.commit()
 
-    return {"data": json.loads(cursor.fetchone())}
+    data = cursor.fetchone()
+
+    if not data or not data[f'{slug}_data']:
+        return {"data": None}
+
+    return {"data": json.loads(data[f'{slug}_data'])}
 
 
 @router.put('/{athlete_id}/{slug}')
