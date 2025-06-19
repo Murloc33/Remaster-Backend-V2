@@ -88,6 +88,7 @@ def check_result(
         place: Annotated[int, Body()],
         birth_date: Annotated[AwareDatetime, Body()],
         win_math: Annotated[int, Body()],
+        discipline_id: Annotated[int, Body()],
         first_additional: Annotated[bool, Body()],
         second_additional: Annotated[bool, Body()],
         third_additional: Annotated[bool, Body()],
@@ -103,9 +104,9 @@ def check_result(
     cursor.execute(
         'SELECT * FROM computer_sport WHERE sports_category_id = ? '
         'AND ? BETWEEN place_from AND place_to AND competition_status_id = ? '
-        'AND ? >= win_match',
+        'AND ? >= win_match AND discipline_id = ?',
         (
-            sports_category_id, place, competition_status_id, win_math
+            sports_category_id, place, competition_status_id, win_math, discipline_id
         )
     )
 

@@ -115,7 +115,7 @@ def update_athlete(
 
     connection.commit()
 
-    return json.dumps({"data" : cursor.fetchone()["doping_data"]})
+    return {"data" : cursor.fetchone()["doping_data"]}
 
 @router.get('/{athlete_id}/result')
 def update_athlete(
@@ -133,4 +133,4 @@ def update_athlete(
 
     connection.commit()
 
-    return json.dumps({"data" : cursor.fetchone()["result_data"]})
+    return {"data" : cursor.fetchone()["result_data"]}
