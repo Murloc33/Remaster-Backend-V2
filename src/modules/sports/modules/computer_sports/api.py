@@ -88,10 +88,10 @@ def check_result(
         birth_date: Annotated[AwareDatetime, Body()],
         win_math: Annotated[int, Body()],
         discipline_id: Annotated[int, Body()],
-        first_additional: Annotated[bool, Body()],
-        second_additional: Annotated[bool, Body()],
-        third_additional: Annotated[bool, Body()],
-        connection: Annotated[Connection, Depends(get_connection)]
+        connection: Annotated[Connection, Depends(get_connection)],
+        first_additional: Annotated[Union[bool, None], Body()] = None,
+        second_additional: Annotated[Union[bool, None], Body()] = None,
+        third_additional: Annotated[Union[bool, None], Body()] = None,
 ):
     age = relativedelta(datetime.now(tz=UTC), birth_date).years
     if (sports_category_id == 1 and age < 16) or (sports_category_id == 2 and age < 14):
