@@ -41,4 +41,4 @@ class AdditionalCondition(BaseModel):
 
 class AdditionalConditions(BaseModel):
     is_internally_subject: bool
-    b: List[AdditionalCondition]
+    additional_conditions: List[AdditionalCondition]
