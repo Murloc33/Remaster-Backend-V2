@@ -123,11 +123,11 @@ def check_result(
     if len(result) == 0:
         return {"data": {"is_sports_category_granted": False}}
 
-    if first_additional or first_additional is None:
-        return {"data": {"is_sports_category_granted": True}}
-
     for row in result:
         if row['subject_from'] is None and row['win_match'] == 0:
             return {"data": {"is_sports_category_granted": True}}
+
+    if first_additional:
+        return {"data": {"is_sports_category_granted": True}}
 
     return {"data": {"is_sports_category_granted": False}}
