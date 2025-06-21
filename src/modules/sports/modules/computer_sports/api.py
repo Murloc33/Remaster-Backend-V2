@@ -61,6 +61,7 @@ def get_additional_conditions(
           AND discipline_id = ?
           AND sports_category_id = ?
           AND ? BETWEEN place_from AND place_to
+          AND NOT (subject_from is NULL AND win_match = 0) 
         """,
         (competition_status_id, discipline_id, sports_category_id, place)
     )
