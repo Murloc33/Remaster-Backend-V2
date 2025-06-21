@@ -1,4 +1,4 @@
-from typing import List, AnyStr, Optional
+from typing import List, Optional, Union
 
 from pydantic import BaseModel
 
@@ -14,12 +14,17 @@ class Discipline(BaseModel):
 class ComputerSportsData(BaseModel):
     competition_statuses: List[CompetitionStatus]
     disciplines: List[Discipline]
+    disciplines_with_mandatory_participation: List[int]
 
-class SubjectData(BaseModel):
+class SubjectType(BaseModel):
     subject_from: int
-    subject_to: Optional[int]
+    subject_to: Union[int, None]
 
-class SubjectsData(BaseModel):
+class SubjectsType(BaseModel):
     is_internally_subject: bool
-    subjects: List[SubjectData]
+    subjects: List[SubjectType]
+
+class AdditionalConditionsType(BaseModel):
+    subjects: SubjectsType
+    min_won_matches: Union[int, None]
 
