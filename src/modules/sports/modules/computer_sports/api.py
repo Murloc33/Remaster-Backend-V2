@@ -25,20 +25,20 @@ def get_data(connection: Annotated[Connection, Depends(get_connection)]):
     cursor.execute('SELECT * FROM computer_sport_discipline')
     computer_sports_discipline = cursor.fetchall()
 
-    print(computer_sports_discipline)
-
-    return JSONResponse(content={"data": ComputerSportsData
-        (
-        competition_statuses=computer_sports_competition_statuses,
-        disciplines=computer_sports_discipline,
-        disciplines_with_mandatory_participation=[1, 5]
-    ).model_dump()})
+    return JSONResponse(
+        content={
+            "data": ComputerSportsData(
+                competition_statuses=computer_sports_competition_statuses,
+                disciplines=computer_sports_discipline,
+                disciplines_with_mandatory_participation=[1, 5]
+            ).model_dump()
+        }
+    )
 
 
 @router.post('/additional-conditions')
 def get_additional_conditions(
     sports_category_id: Annotated[int, Body()],
-    birth_date: Annotated[AwareDatetime, Body()],
     competition_status_id: Annotated[int, Body()],
     discipline_id: Annotated[int, Body()],
     place: Annotated[int, Body()],
@@ -47,11 +47,7 @@ def get_additional_conditions(
     cursor = connection.cursor()
 
     cursor.execute(
-        """
-        SELECT is_internally_subject
-        FROM computer_sport
-        WHERE competition_status_id = ?
-        """,
+        "SELECT is_internally_subject FROM computer_sport WHERE competition_status_id = ?",
         (competition_status_id,)
     )
     is_internally_subject = cursor.fetchone()["is_internally_subject"]
@@ -65,23 +61,9 @@ def get_additional_conditions(
           AND sports_category_id = ?
           AND ? BETWEEN place_from AND place_to
         """,
-        (
-            competition_status_id, discipline_id, sports_category_id, place
-        )
+        (competition_status_id, discipline_id, sports_category_id, place)
     )
     min_won_match = cursor.fetchone()["win_match"]
-
-    age = relativedelta(datetime.now(tz=UTC), birth_date).years
-    if (sports_category_id == 1 and age < 16) or (sports_category_id == 2 and age < 14):
-        return JSONResponse(
-            content={"data": AdditionalConditionsType(
-                subjects=SubjectsType(
-                    is_internally_subject=is_internally_subject,
-                    subjects=[]
-                ).model_dump(),
-                min_won_matches=min_won_match
-            ).model_dump()}
-        )
 
     cursor.execute(
         """
@@ -93,35 +75,35 @@ def get_additional_conditions(
           AND ? BETWEEN place_from AND place_to
           AND subject_from IS NOT NULL
         """,
-        (
-            competition_status_id, discipline_id, sports_category_id, place
-        )
+        (competition_status_id, discipline_id, sports_category_id, place)
     )
     subject_data = cursor.fetchall()
 
     return JSONResponse(
-        content={"data": AdditionalConditionsType(
-            subjects=SubjectsType(
-                is_internally_subject=is_internally_subject,
-                subjects=subject_data
-            ),
-            min_won_matches=min_won_match
-        ).model_dump()}
+        content={
+            "data": AdditionalConditionsType(
+                subjects=SubjectsType(
+                    is_internally_subject=is_internally_subject,
+                    subjects=subject_data
+                ),
+                min_won_matches=min_won_match
+            ).model_dump()
+        }
     )
 
 
 @router.post('/check-result')
 def check_result(
-        sports_category_id: Annotated[int, Body()],
-        competition_status_id: Annotated[int, Body()],
-        place: Annotated[int, Body()],
-        birth_date: Annotated[AwareDatetime, Body()],
-        win_math: Annotated[int, Body()],
-        discipline_id: Annotated[int, Body()],
-        connection: Annotated[Connection, Depends(get_connection)],
-        first_additional: Annotated[Union[bool, None], Body()] = None,
-        second_additional: Annotated[Union[bool, None], Body()] = None,
-        third_additional: Annotated[Union[bool, None], Body()] = None,
+    sports_category_id: Annotated[int, Body()],
+    competition_status_id: Annotated[int, Body()],
+    place: Annotated[int, Body()],
+    birth_date: Annotated[AwareDatetime, Body()],
+    win_math: Annotated[int, Body()],
+    discipline_id: Annotated[int, Body()],
+    connection: Annotated[Connection, Depends(get_connection)],
+    first_additional: Annotated[Union[bool, None], Body()] = None,
+    second_additional: Annotated[Union[bool, None], Body()] = None,
+    third_additional: Annotated[Union[bool, None], Body()] = None,
 ):
     age = relativedelta(datetime.now(tz=UTC), birth_date).years
     if (sports_category_id == 1 and age < 16) or (sports_category_id == 2 and age < 14):
