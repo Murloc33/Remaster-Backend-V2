@@ -90,19 +90,19 @@ def check_result(
     discipline_id: Annotated[int, Body()],
     place: Annotated[int, Body()],
     connection: Annotated[Connection, Depends(get_connection)],
-    first_additional: Annotated[Union[bool, None], Body()] = None,
-    second_additional: Annotated[Union[bool, None], Body()] = None,
-    third_additional: Annotated[Union[bool, None], Body()] = None,
+    first_condition: Annotated[Union[bool, None], Body()] = None,
+    second_condition: Annotated[Union[bool, None], Body()] = None,
+    third_condition: Annotated[Union[bool, None], Body()] = None,
 ):
     age = relativedelta(datetime.now(tz=UTC), birth_date).years
 
     if (sports_category_id == 1 and age < 16) or (sports_category_id == 2 and age < 14):
         return {"data": {"is_sports_category_granted": False}}
 
-    if place >= 9 and sports_category_id == 2 and not third_additional:
+    if place >= 9 and sports_category_id == 2 and not third_condition:
         return {"data": {"is_sports_category_granted": False}}
 
-    if discipline_id in (1, 5) and not second_additional:
+    if discipline_id in (1, 5) and not second_condition:
         return {"data": {"is_sports_category_granted": False}}
 
     cursor = connection.cursor()
@@ -127,7 +127,7 @@ def check_result(
         if row['subject_from'] is None and row['win_match'] == 0:
             return {"data": {"is_sports_category_granted": True}}
 
-    if first_additional:
+    if first_condition:
         return {"data": {"is_sports_category_granted": True}}
 
     return {"data": {"is_sports_category_granted": False}}
