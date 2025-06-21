@@ -99,7 +99,7 @@ def check_result(
     if (sports_category_id == 1 and age < 16) or (sports_category_id == 2 and age < 14):
         return {"data": {"is_sports_category_granted": False}}
 
-    if place >= 9 and sports_category_id == 2 and third_additional == False:
+    if place >= 9 and sports_category_id == 2 and not third_additional:
         return {"data": {"is_sports_category_granted": False}}
 
     if discipline_id in (1, 5) and not second_additional:
