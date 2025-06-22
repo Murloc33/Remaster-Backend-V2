@@ -34,7 +34,8 @@ def create_document_from_file(
             'is_sports_category_granted, is_doping_check_passed, doping_data, result_data) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             (
                 document_id, item['full_name'], item['birth_date'], item['sport_id'], item['municipality'],
-                item['organization'], item['is_sports_category_granted'], item['is_doping_check_passed']
+                item['organization'], item['is_sports_category_granted'], item['is_doping_check_passed'],
+                item['doping_data'], item['result_data']
             )
         )
     connection.commit()
