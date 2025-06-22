@@ -50,10 +50,11 @@ def put_athlete_file(
     for athlete in data:
         cursor.execute(
             'INSERT INTO document_athletes (document_id, full_name, birth_date, sport_id, municipality, organization,'
-            'is_sports_category_granted, is_doping_check_passed) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            'is_sports_category_granted, is_doping_check_passed, doping_data, result_data) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             (
                 document_id, athlete['full_name'], athlete['birth_date'], athlete['sport_id'], athlete['municipality'],
-                athlete['organization'], athlete['is_sports_category_granted'], athlete['is_doping_check_passed']
+                athlete['organization'], athlete['is_sports_category_granted'], athlete['is_doping_check_passed'],
+                athlete['doping_data'], athlete['result_data']
             )
         )
     connection.commit()

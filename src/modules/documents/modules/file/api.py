@@ -31,7 +31,7 @@ def create_document_from_file(
     for item in data["athletes"]:
         cursor.execute(
             'INSERT INTO document_athletes (document_id, full_name, birth_date, sport_id, municipality, organization,'
-            'is_sports_category_granted, is_doping_check_passed) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            'is_sports_category_granted, is_doping_check_passed, doping_data, result_data) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             (
                 document_id, item['full_name'], item['birth_date'], item['sport_id'], item['municipality'],
                 item['organization'], item['is_sports_category_granted'], item['is_doping_check_passed']
