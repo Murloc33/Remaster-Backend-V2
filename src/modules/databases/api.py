@@ -2,7 +2,7 @@ import shutil
 from datetime import datetime
 from sqlite3 import Connection
 
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter, Depends, Body, Path
 from openpyxl import load_workbook
 from starlette.responses import Response
 from typing_extensions import Annotated
@@ -59,32 +59,34 @@ def upload_doping_athlete(
     return Response()
 
 
-@router.put('/orders/upload')
-def upload_order(
+@router.put('/{slug}/upload')
+def upload_sports(
+    slug: Annotated[str, Path()],
     path: Annotated[str, Body(embed=True)],
     connection: Annotated[Connection, Depends(get_connection)]
 ):
-    cursor = connection.cursor()
+    file_name = path.rsplit('/', 1)[1]
+    extension = file_name.rsplit('.', 1)[1]
 
-    cursor.execute("UPDATE databases SET date = ? WHERE slug = ?", (str(datetime.now().strftime('%d.%m.%Y')), "orders"))
+    shutil.copy(path, resource_path(f'resources/{slug}.{extension}'))
+
+    cursor = connection.cursor()
+    cursor.execute(
+        "UPDATE databases SET date = ?, file_name = ? WHERE slug = ?",
+        (str(datetime.now().strftime('%d.%m.%Y')), file_name, slug)
+    )
     connection.commit()
 
-    shutil.copy(path, resource_path('resources/order.docx'))
-
     return Response()
 
 
-@router.put('/doping-athletes/download')
-def download_doping_athlete(
+@router.put('/{slug}/download')
+def download_file(
+    slug: Annotated[str, Path()],
     path: Annotated[str, Body(embed=True)],
 ):
-    shutil.copy(resource_path("resources/doping-athletes.xlsx"), path)
-    return Response()
+    file_name = path.rsplit('/', 1)[1]
+    extension = file_name.rsplit('.', 1)[1]
 
-
-@router.put('/orders/download')
-def download_order(
-    path: Annotated[str, Body(embed=True)],
-):
-    shutil.copy(resource_path("resources/order.docx"), path)
+    shutil.copy(resource_path(f"resources/{slug}.{extension}"), path)
     return Response()
