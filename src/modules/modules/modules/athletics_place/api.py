@@ -58,9 +58,10 @@ def get_additional_conditions(
           AND discipline_id = ?
           AND sport_category_id = ?
           AND ? BETWEEN place_from AND place_to
+          AND ? BETWEEN age_from AND age_to
           AND NOT (subject_from is NULL AND min_participants is NULL)
         """,
-        (competition_status_id, discipline_id, sports_category_id, place)
+        (competition_status_id, discipline_id, sports_category_id, place, age)
     )
     data = cursor.fetchall()
 
