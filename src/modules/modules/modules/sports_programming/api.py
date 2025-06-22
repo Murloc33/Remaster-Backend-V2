@@ -21,13 +21,20 @@ def get_data(connection: Annotated[Connection, Depends(get_connection)]):
     cursor.execute('SELECT * FROM sports_programming_competition_statuses')
     sports_programming_competition_statuses = cursor.fetchall()
 
-    return JSONResponse(content={"data": SportsProgrammingData(competition_statuses=sports_programming_competition_statuses).model_dump()})
+    cursor.execute('SELECT * FROM sports_programming_disciplines')
+    sports_programming_disciplines = cursor.fetchall()
+
+    return JSONResponse(content={"data": SportsProgrammingData(
+        competition_statuses=sports_programming_competition_statuses,
+        disciplines=sports_programming_disciplines
+    ).model_dump()})
 
 
 @router.post('/check-result')
 def check_result(
     sports_category_id: Annotated[int, Body()],
     competition_status_id: Annotated[int, Body()],
+    discipline_id: Annotated[int, Body()],
     place: Annotated[int, Body()],
     birth_date: Annotated[AwareDatetime, Body()],
     connection: Annotated[Connection, Depends(get_connection)]
@@ -38,9 +45,12 @@ def check_result(
 
     cursor.execute(
         'SELECT * FROM sports_programming WHERE sports_category_id = ? '
-        'AND ? BETWEEN place_from AND place_to AND competition_status_id = ? AND ? BETWEEN age_from AND ifnull(age_to, 99999)',
+        'AND discipline_id = ? '
+        'AND ? BETWEEN place_from AND place_to '
+        'AND competition_status_id = ? '
+        'AND ? BETWEEN age_from AND age_to',
         (
-            sports_category_id, place, competition_status_id, age
+            sports_category_id, discipline_id, place, competition_status_id, age
         )
     )
 
