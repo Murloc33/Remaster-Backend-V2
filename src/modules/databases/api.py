@@ -51,10 +51,16 @@ def upload_doping_athlete(
             )
         )
 
-    cursor.execute('UPDATE databases SET date = ? WHERE slug = ?', (str(datetime.now().strftime('%d.%m.%Y')), "doping-athletes"))
-    connection.commit()
-
     shutil.copy(path, resource_path("resources/doping-athletes.xlsx"))
+
+    file_name = path.rsplit('\\', 1)[1]
+
+    cursor = connection.cursor()
+    cursor.execute(
+        "UPDATE databases SET date = ?, file_name = ? WHERE slug = ?",
+        (str(datetime.now().strftime('%d.%m.%Y')), file_name, "doping-athletes")
+    )
+    connection.commit()
 
     return Response()
 
@@ -65,7 +71,7 @@ def upload_sports(
     path: Annotated[str, Body(embed=True)],
     connection: Annotated[Connection, Depends(get_connection)]
 ):
-    file_name = path.rsplit('/', 1)[1]
+    file_name = path.rsplit('\\', 1)[1]
     extension = file_name.rsplit('.', 1)[1]
 
     shutil.copy(path, resource_path(f'resources/{slug}.{extension}'))
@@ -85,7 +91,7 @@ def download_file(
     slug: Annotated[str, Path()],
     path: Annotated[str, Body(embed=True)],
 ):
-    file_name = path.rsplit('/', 1)[1]
+    file_name = path.rsplit('\\', 1)[1]
     extension = file_name.rsplit('.', 1)[1]
 
     shutil.copy(resource_path(f"resources/{slug}.{extension}"), path)

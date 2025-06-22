@@ -1,6 +1,11 @@
-from typing import Any
+from typing import Any, Dict
 
 from pydantic import BaseModel
+
+
+class DopingData(BaseModel):
+    full_name: str
+    selectId: int
 
 
 class CreateAthlete(BaseModel):
@@ -11,5 +16,5 @@ class CreateAthlete(BaseModel):
     organization: str
     is_sports_category_granted: bool
     is_doping_check_passed: bool
-    doping_data: Any
-    doping_result: Any
+    doping_data: Dict[str, Any]
+    result_data: Dict[str, Any]

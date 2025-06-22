@@ -1,4 +1,4 @@
-from typing import List, Any
+from typing import List, Any, Dict
 
 from pydantic import BaseModel, TypeAdapter
 
@@ -11,8 +11,8 @@ class Athlete(BaseModel):
     organization: str
     is_sports_category_granted: bool
     is_doping_check_passed: bool
-    doping_data: Any
-    result_data: Any
+    doping_data: Dict[str, Any]
+    result_data: Dict[str, Any]
 
 
 Athletes = TypeAdapter(List[Athlete])

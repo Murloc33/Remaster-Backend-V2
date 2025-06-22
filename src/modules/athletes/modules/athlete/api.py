@@ -12,18 +12,18 @@ from modules.athletes.modules.athlete.schemes import UpdateAthlete, Athlete
 router = APIRouter()
 
 
-@router.get('/{athlete_id}')
-def get_athletes(
-    athlete_id: Annotated[int, Path()],
-    connection: Annotated[Connection, Depends(get_connection)]
-):
-    cursor = connection.cursor()
-
-    cursor.execute("SELECT * FROM document_athletes WHERE id = ?", (athlete_id,))
-    athlete = cursor.fetchone()
-
-    return JSONResponse(content={"data": Athlete(**athlete).model_dump()})
-
+# @router.get('/{athlete_id}')
+# def get_athletes(
+#     athlete_id: Annotated[int, Path()],
+#     connection: Annotated[Connection, Depends(get_connection)]
+# ):
+#     cursor = connection.cursor()
+#
+#     cursor.execute("SELECT * FROM document_athletes WHERE id = ?", (athlete_id,))
+#     athlete = cursor.fetchone()
+#
+#     return JSONResponse(content={"data": Athlete(**athlete).model_dump()})
+#
 
 @router.put('/{athlete_id}')
 def update_athlete(

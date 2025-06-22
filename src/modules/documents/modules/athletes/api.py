@@ -30,7 +30,7 @@ def create_athlete(
             document_id, athlete.full_name, athlete.birth_date, athlete.sport_id,
             athlete.municipality, athlete.organization,
             athlete.is_sports_category_granted, athlete.is_doping_check_passed,
-            athlete.doping_data, athlete.result_data
+            json.dumps(athlete.doping_data), json.dumps(athlete.result_data)
         )
     )
     id_ = cursor.fetchone()["id"]

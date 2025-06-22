@@ -48,7 +48,7 @@ def get_additional_conditions(
 ):
     cursor = connection.cursor()
 
-    age = relativedelta(datetime.now(tz=UTC), birth_date).years
+    age = datetime.now(tz=UTC).year - birth_date.year
 
     cursor.execute(
         """

@@ -1,3 +1,4 @@
+import json
 from sqlite3 import Connection
 
 from fastapi import APIRouter, Depends, Body, Path
@@ -5,7 +6,7 @@ from starlette.responses import Response, JSONResponse
 from typing_extensions import Annotated
 
 from core.methods import get_connection
-from modules.documents.modules.document.schemes import CreateDocument, Document, UpdateDocument
+from modules.documents.modules.document.schemes import CreateDocument, Document, UpdateDocument, Athlete
 
 router = APIRouter()
 
