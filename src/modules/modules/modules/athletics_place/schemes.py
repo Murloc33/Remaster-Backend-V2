@@ -16,7 +16,7 @@ class Discipline(BaseModel):
 class AthleticsPlaceData(BaseModel):
     competition_statuses: List[CompetitionStatus]
     disciplines: List[Discipline]
-    disciplines_with_minimum_number_of_participants_participation: List[int]
+    disciplines_with_minimum_number_of_participants: List[int]
 
 
 class SubjectType(BaseModel):
