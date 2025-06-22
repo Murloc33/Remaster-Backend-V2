@@ -23,13 +23,14 @@ def create_athlete(
         (
             "INSERT INTO document_athletes "
             "(document_id, full_name, birth_date, sport_id, municipality, organization,"
-            " is_sports_category_granted, is_doping_check_passed) "
-            "VALUES(?, ?, ?, ?, ?, ?, ?, ?) RETURNING id"
+            " is_sports_category_granted, is_doping_check_passed, doping_data, result_data) "
+            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id"
         ),
         (
             document_id, athlete.full_name, athlete.birth_date, athlete.sport_id,
             athlete.municipality, athlete.organization,
-            athlete.is_sports_category_granted, athlete.is_doping_check_passed
+            athlete.is_sports_category_granted, athlete.is_doping_check_passed,
+            athlete.doping_data, athlete.result_data
         )
     )
     id_ = cursor.fetchone()["id"]

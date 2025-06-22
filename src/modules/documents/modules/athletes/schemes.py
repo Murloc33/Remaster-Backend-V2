@@ -1,3 +1,5 @@
+from typing import Any
+
 from pydantic import BaseModel
 
 
@@ -9,3 +11,5 @@ class CreateAthlete(BaseModel):
     organization: str
     is_sports_category_granted: bool
     is_doping_check_passed: bool
+    doping_data: Any
+    doping_result: Any
