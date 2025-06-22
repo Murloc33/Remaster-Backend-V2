@@ -10,10 +10,10 @@ router = APIRouter()
 
 
 @router.get('/')
-def get_sports(connection: Annotated[Connection, Depends(get_connection)]):
+def get_modules(connection: Annotated[Connection, Depends(get_connection)]):
     cursor = connection.cursor()
 
-    cursor.execute('SELECT * FROM modules')
+    cursor.execute('SELECT * FROM modules ORDER BY title ASC')
     data = cursor.fetchall()
 
     return {"data": Modules.validate_python(data)}
