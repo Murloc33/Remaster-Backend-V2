@@ -24,16 +24,6 @@ class SubjectType(BaseModel):
     subject_to: Union[int, None]
 
 
-# class SubjectsType(BaseModel):
-#     is_internally_subject: bool
-#     subjects: List[SubjectType]
-#
-#
-# class AdditionalConditionsType(BaseModel):
-#     subjects: SubjectsType
-#     min_won_matches: Union[int, None]
-
-
 class AdditionalCondition(BaseModel):
     subject: Union[SubjectType, None]
     min_won_matches: Union[int, None]

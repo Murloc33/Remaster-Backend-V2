@@ -9,9 +9,9 @@ from starlette.responses import JSONResponse
 from typing_extensions import Annotated
 
 from core.methods import get_connection
-from modules.sports.modules.sports_programming.schemes import SportsProgrammingData
+from modules.modules.modules.sports_programming.schemes import SportsProgrammingData
 
-router = APIRouter(prefix='/2')
+router = APIRouter(prefix='/3')
 
 
 @router.get('/data')

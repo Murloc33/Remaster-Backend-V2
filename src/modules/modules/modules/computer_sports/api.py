@@ -10,10 +10,10 @@ from starlette.responses import JSONResponse
 from typing_extensions import Annotated
 
 from core.methods import get_connection
-from modules.sports.modules.computer_sports.schemes import ComputerSportsData, AdditionalConditions, \
+from modules.modules.modules.computer_sports.schemes import ComputerSportsData, AdditionalConditions, \
     AdditionalCondition, SubjectType
 
-router = APIRouter(prefix='/3')
+router = APIRouter(prefix='/4')
 
 
 @router.get('/data')

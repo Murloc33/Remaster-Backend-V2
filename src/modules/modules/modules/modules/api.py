@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from typing_extensions import Annotated
 
 from core.methods import get_connection
-from modules.sports.modules.sports.schemes import Sports
+from modules.modules.modules.modules.schemes import Modules
 
 router = APIRouter()
 
@@ -13,7 +13,7 @@ router = APIRouter()
 def get_sports(connection: Annotated[Connection, Depends(get_connection)]):
     cursor = connection.cursor()
 
-    cursor.execute('SELECT * FROM sports')
+    cursor.execute('SELECT * FROM modules')
     data = cursor.fetchall()
 
-    return {"data": Sports.validate_python(data)}
+    return {"data": Modules.validate_python(data)}
