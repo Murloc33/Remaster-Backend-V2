@@ -33,8 +33,8 @@ def create_order(
                                 'n': f'{sport_number}.{athlete_number}',
                                 'name': athlete.full_name,
                                 'date': athlete.birth_date,
-                                'm': athlete.municipality,
-                                'o': athlete.organization
+                                'm': athlete.municipality_id,
+                                'o': athlete.organization_id
                             } for athlete_number, athlete in enumerate(sport.athletes, start=1)
                         ] + (
                             [

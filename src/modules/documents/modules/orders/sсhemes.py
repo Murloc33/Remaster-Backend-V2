@@ -5,8 +5,8 @@ from typing_extensions import Annotated, List
 class Athletes(BaseModel):
     full_name: str
     birth_date: Annotated[str, Field(pattern=r'^\d{2}\.\d{2}\.\d{4}$')]
-    municipality: str
-    organization: str
+    municipality_id: int
+    organization_id: int
 
 
 class Sport(BaseModel):

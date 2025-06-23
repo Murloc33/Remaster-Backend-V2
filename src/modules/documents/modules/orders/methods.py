@@ -40,12 +40,20 @@ def get_order(connection: Connection, document_id: int) -> Order:
             Athletes(
                 full_name=athlete['full_name'],
                 birth_date=datetime.strptime(athlete['birth_date'], "%Y-%m-%d").strftime("%d.%m.%Y"),
-                municipality=athlete['municipality'],
-                organization=athlete['organization']
+                municipality_id=athlete['municipality_id'],
+                organization_id=athlete['organization_id']
             )
         )
 
     return Order(
         sports_category_name=sports_category_name,
-        sports=[Sport(name=sport_name, athletes=athletes) for sport_name, athletes in sports.items()]
+        sports=sorted(
+            [
+                Sport(
+                    name=sport_name,
+                    athletes=sorted(athletes, key=lambda x: (x.full_name, x.birth_date, x.municipality_id, x.organization_id))
+                ) for sport_name, athletes in sports.items()
+            ],
+            key=lambda x: x.name
+        )
     )

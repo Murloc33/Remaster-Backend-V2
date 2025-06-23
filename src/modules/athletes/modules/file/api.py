@@ -20,9 +20,10 @@ def get_athletes_to_file(
 ):
     cursor = connection.cursor()
 
-    placeholders = ','.join(['?'] * len(athlete_ids))
-    query = f"SELECT * FROM document_athletes WHERE id IN ({placeholders})"
-    cursor.execute(query, athlete_ids)
+    cursor.execute(
+        f"SELECT * FROM document_athletes WHERE id IN ({','.join(['?'] * len(athlete_ids))})",
+        athlete_ids
+    )
     athlete_data = cursor.fetchall()
 
     with open(path, 'w', encoding='utf-8') as file:

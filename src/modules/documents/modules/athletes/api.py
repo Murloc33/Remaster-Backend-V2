@@ -22,13 +22,13 @@ def create_athlete(
     cursor.execute(
         (
             "INSERT INTO document_athletes "
-            "(document_id, full_name, birth_date, sport_id, municipality, organization,"
+            "(document_id, full_name, birth_date, sport_id, municipality_id, organization_id,"
             " is_sports_category_granted, is_doping_check_passed, doping_data, result_data) "
             "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id"
         ),
         (
             document_id, athlete.full_name, athlete.birth_date, athlete.sport_id,
-            athlete.municipality, athlete.organization,
+            athlete.municipality_id, athlete.organization_id,
             athlete.is_sports_category_granted, athlete.is_doping_check_passed,
             json.dumps(athlete.doping_data), json.dumps(athlete.result_data)
         )
@@ -50,11 +50,11 @@ def put_athlete_file(
     cursor = connection.cursor()
     for athlete in data:
         cursor.execute(
-            'INSERT INTO document_athletes (document_id, full_name, birth_date, sport_id, municipality, organization,'
+            'INSERT INTO document_athletes (document_id, full_name, birth_date, sport_id, municipality_id, organization_id,'
             'is_sports_category_granted, is_doping_check_passed, doping_data, result_data) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             (
-                document_id, athlete['full_name'], athlete['birth_date'], athlete['sport_id'], athlete['municipality'],
-                athlete['organization'], athlete['is_sports_category_granted'], athlete['is_doping_check_passed'],
+                document_id, athlete['full_name'], athlete['birth_date'], athlete['sport_id'], athlete['municipality_id'],
+                athlete['organization_id'], athlete['is_sports_category_granted'], athlete['is_doping_check_passed'],
                 athlete['doping_data'], athlete['result_data']
             )
         )
