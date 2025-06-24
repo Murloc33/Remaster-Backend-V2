@@ -38,13 +38,8 @@ def get_document(
     cursor.execute('SELECT * FROM documents WHERE id = ?', (document_id,))
     document_data = cursor.fetchone()
 
-    cursor.execute('SELECT * FROM sports')
-    sports_data = {v['id']: v['name'] for v in cursor.fetchall()}
-
-    cursor.execute('SELECT * FROM document_athletes WHERE document_id = ?', (document_id,))
+    cursor.execute('SELECT * FROM document_athletes WHERE document_id = ? ORDER BY created_at', (document_id,))
     athletes_data = cursor.fetchall()
-
-    athletes_data.sort(key=lambda athlete: (sports_data[athlete['sport_id']], athlete['full_name']))
 
     return JSONResponse(content={"data": Document(**document_data, athletes=athletes_data).model_dump()})
 
