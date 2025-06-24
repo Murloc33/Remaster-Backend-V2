@@ -19,7 +19,7 @@ def create_order(
 ):
     order = get_order(connection, document_id)
 
-    document = DocxTemplate(resource_path("resources/order.docx"))
+    document = DocxTemplate(resource_path("resources/orders.docx"))
     document.render(
         {
             'sports_category_name': order.sports_category_name,
