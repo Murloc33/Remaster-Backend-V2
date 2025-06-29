@@ -106,12 +106,15 @@ def check_result(
         """
         SELECT *
         FROM athletics_result
+        JOIN athletics_result_disciplines ON athletics_result.discipline_id = athletics_result_disciplines.id
         WHERE discipline_id = ?
           AND discipline_content_id = ?
           AND sport_category_id = ?
           AND ? BETWEEN age_from AND age_to
+          AND (athletics_result_disciplines.system_counting_id = 1 AND athletics_result.min_result >= ?)
+           OR (athletics_result_disciplines.system_counting_id = 2 AND athletics_result.min_result <= ?) 
         """,
-        (discipline_id, content_id, sports_category_id, age)
+        (discipline_id, content_id, sports_category_id, age, result)
     )
 
     result = cursor.fetchall()
