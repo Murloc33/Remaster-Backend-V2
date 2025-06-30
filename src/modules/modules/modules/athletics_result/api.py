@@ -38,7 +38,7 @@ def get_additional_conditions_discipline(
 ):
     cursor = connection.cursor()
 
-    cursor.execute('SELECT id, name FROM athletics_result_disciplines WHERE sex_id = ?', (sex_id,))
+    cursor.execute('SELECT id, name FROM athletics_result_disciplines WHERE sex_id = ?', (1,))
     disciplines = cursor.fetchall()
 
     return JSONResponse(
