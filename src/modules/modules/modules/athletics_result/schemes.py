@@ -1,30 +1,29 @@
-from typing import List, Union
+from typing import List, Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, TypeAdapter
 
 
 class Discipline(BaseModel):
     id: int
     name: str
 
-class Disciplines(BaseModel):
-    disciplines: List[Discipline]
 
-class SystemCounting(BaseModel):
-    id: int
-    name: str
+Disciplines = TypeAdapter(List[Discipline])
+
 
 class Content(BaseModel):
     id: int
     name: str
 
+
 class AdditionalData(BaseModel):
-    system_count: SystemCounting
+    system_count: Literal['meter', 'second']
     contents: List[Content]
+
 
 class Sex(BaseModel):
     id: int
     name: str
 
-class Data(BaseModel):
-    sex: List[Sex]
+
+SexArray = TypeAdapter(List[Sex])
