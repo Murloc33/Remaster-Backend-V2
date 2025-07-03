@@ -91,8 +91,8 @@ def check_result(
     connection: Annotated[Connection, Depends(get_connection)],
     content_id: Annotated[Union[int, None], Body()] = None
 ):
-    if first_condition:
-        return {"data": {"is_sports_category_granted": True}}
+    if not first_condition:
+        return {"data": {"is_sports_category_granted": False}}
 
     age = datetime.now(tz=UTC).year - birth_date.year
 
