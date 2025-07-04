@@ -17,6 +17,14 @@ def create_order(
     path: Annotated[str, Body(embed=True)],
     connection: Annotated[Connection, Depends(get_connection)]
 ):
+    cursor = connection.cursor()
+
+    cursor.execute('SELECT id, title FROM municipalities')
+    municipalities = {e['id']: e['title'] for e in cursor.fetchall()}
+
+    cursor.execute('SELECT id, title FROM organizations')
+    organizations = {e['id']: e['title'] for e in cursor.fetchall()}
+
     order = get_order(connection, document_id)
 
     document = DocxTemplate(resource_path("resources/orders.docx"))
@@ -33,8 +41,8 @@ def create_order(
                                 'n': f'{sport_number}.{athlete_number}',
                                 'name': athlete.full_name,
                                 'date': athlete.birth_date,
-                                'm': athlete.municipality_id,
-                                'o': athlete.organization_id
+                                'm': municipalities.get(athlete.municipality_id),
+                                'o': organizations.get(athlete.organization_id),
                             } for athlete_number, athlete in enumerate(sport.athletes, start=1)
                         ]
                     )
